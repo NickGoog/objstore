@@ -408,6 +408,8 @@ const DirDelim = "/"
 // directory, a file with the same name as the source is created in dst.
 // If destination file is already existing, download file will overwrite it.
 func DownloadFile(ctx context.Context, logger log.Logger, bkt BucketReader, src, dst string) (err error) {
+	x := time.Now()
+	logger.Log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! DownloadFile " + src)
 	if fi, err := os.Stat(dst); err == nil {
 		if fi.IsDir() {
 			dst = filepath.Join(dst, filepath.Base(src))
@@ -438,6 +440,9 @@ func DownloadFile(ctx context.Context, logger log.Logger, bkt BucketReader, src,
 	if _, err = io.Copy(f, rc); err != nil {
 		return errors.Wrapf(err, "copy object to file %s", src)
 	}
+	fileContents, err := os.ReadFile(dst)
+	logger.Log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! " + string(fileContents))
+	logger.Log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! DownloadFile END " + src + " " + (time.Since(x)).String())
 	return nil
 }
 
